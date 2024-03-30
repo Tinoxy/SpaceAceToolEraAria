@@ -46,7 +46,7 @@ namespace SpaceAceToolEraAria.Connection
 
         internal static void SetLogic(string? profile)
         {
-            throw new NotImplementedException();
+            LogicProfile = profile ?? "default";
         }
     }
 }
