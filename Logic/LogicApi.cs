@@ -15,7 +15,6 @@ namespace SpaceAceToolEraAria.Logic
         {
             Console.WriteLine("Logic");
         }
-        //TODO: remove also players and handle players properly
         public async Task Start()
         {
             while(true)
@@ -27,13 +26,10 @@ namespace SpaceAceToolEraAria.Logic
                     {
                         continue;
                     }
-                    System.Console.WriteLine("Logic");
                     var closest = session.User.NpcClosestTo();
                     System.Console.WriteLine(closest);
                     if(closest == null)
                     {
-                        System.Console.WriteLine(closest);
-                        System.Console.WriteLine(session.User.Moving);
                         if(session.User.Moving)
                             continue;
                         var random = new Random();
@@ -41,27 +37,25 @@ namespace SpaceAceToolEraAria.Logic
                         var y = random.Next(0, 13000);
                         await session.SendPacket("MD|"+x+"|"+y);
                         var timeToEnd = session.User.Position.DistanceTo(new(x , y)) / session.User.Speed * 1000;
-                        await session.SendClient($"SHM|{session.User.ID}|{x}|{y}|{timeToEnd}");
-
+                        await session.SendClient($"SHM|{session.User.ID}|{x}|{y}|{(int)timeToEnd}");
                     }
                     if(closest != null && session.User.Target?.ID != closest.ID)
                     {
                         await session.SendPacket(new NpcClicked(closest.ID));
+                        await session.SendPacket("SRTA");
                         session.User.Target = closest;
-                        System.Console.WriteLine($"Npc {closest.ID}:{closest.Username} clicked");
                         continue;
                     }
-                        await session.SendPacket("SRTA");
+                    if(closest == null)
+                        continue;
                         await Task.Delay(120);
-                        await session.SendPacket($"MD|{closest.Position.X}|{closest.Position.Y}");
-                        var time = Movement.GetTime(session.User, closest.Position);
-                        System.Console.WriteLine($"Time: {time}");
-                        if(session.User.Moving)
+                        await session.SendPacket($"MD|{closest.Position.X + 400}|{closest.Position.Y}");
+                        var time = session.User.Position.DistanceTo(closest.Position) / session.User.Speed * 1000;
+                        if(time < 300)
                         {
-                            continue;
+                            time = 500;
                         }
-                          var timeToEnd = session.User.Position.DistanceTo(closest.Position) / session.User.Speed * 1000;
-                        await session.SendClient($"SHM|{session.User.ID}|{closest.Position.X + 400}|{closest.Position.Y}|{timeToEnd}");
+                        await session.SendClient($"SHM|{session.User.ID}|{closest.Position.X + 400}|{closest.Position.Y}|{(int)time}");
                     }
                 catch(Exception e)
                 {

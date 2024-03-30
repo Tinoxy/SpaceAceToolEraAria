@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,15 +13,15 @@ namespace SpaceAceToolEraAria.Connection
     public static class WebSocketServer
     {
         public static WatsonWsServer Server { get; set; }= new WatsonWsServer("localhost" , 8999 , false);
+        private static ConcurrentDictionary<Guid ,Session> Sessions { get; set; } = new();
 
         public static async Task Start()
         {
             Server.ClientDisconnected += (s, e) =>
             {
-                if(e.Client.Guid == GameSession?.Id)
+                if(Sessions.TryRemove(e.Client.Guid, out var session))
                 {
-                    GameSession.Dispose();
-                    GameSession = null;
+                    session.Dispose();
                 }
             };
             Server.MessageReceived += OnMessageRequest;
@@ -45,15 +46,14 @@ namespace SpaceAceToolEraAria.Connection
             var message = Encoding.UTF8.GetString(e.Data);
             if(message.StartsWith("HI|"))
             {
-                GameSession = new Session(client);  
+                var session = new Session(client);
+                Sessions.TryAdd(client, session);
                 System.Console.WriteLine("Game client connected");
             }
-            if(GameSession != null)
+            if(Sessions.TryGetValue(client, out var sessionInstance))
             {
-                _ = GameSession.ReceivePacket(message);
+                _ = sessionInstance.ReceivePacket(message);
             }
         }
-
-     
     }
 }
