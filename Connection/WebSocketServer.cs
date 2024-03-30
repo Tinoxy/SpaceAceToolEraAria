@@ -45,6 +45,7 @@ namespace SpaceAceToolEraAria.Connection
         {
             var client = e.Client.Guid;
             var message = Encoding.UTF8.GetString(e.Data);
+            System.Console.WriteLine("Received message: " + message);
             if(message.StartsWith("HI|"))
             {
                 var session = new Session(client);

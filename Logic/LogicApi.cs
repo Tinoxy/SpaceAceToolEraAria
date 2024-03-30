@@ -11,7 +11,7 @@ namespace SpaceAceToolEraAria.Logic
     public class LogicApi(Session session)
     {
 
-
+        private DateTime LastSent = DateTime.MinValue;
 
         public async Task StartBox()
         {
@@ -27,12 +27,13 @@ namespace SpaceAceToolEraAria.Logic
                     }
                     var closest = session.User.GetClosestBox();
                     session.User.Box = closest;
+                  
                     
                     if(session.User.Position.X == closest.Position.X && session.User.Box.Position.Y - 110 == session.User.Position.Y)
                     {
                         System.Console.WriteLine("Collecting box: " + closest.Hash);
                         await session.SendPacket("RQBCL|"+closest.Hash);
-                        await Task.Delay(1000);
+                        await Task.Delay(1020);
                     }
                     await Move(closest.Position.X, closest.Position.Y - 110);
                     await Task.Delay(20);
