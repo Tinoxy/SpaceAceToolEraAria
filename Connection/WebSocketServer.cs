@@ -17,6 +17,7 @@ namespace SpaceAceToolEraAria.Connection
 
         public static async Task Start()
         {
+            Server.ClientConnected += (s, e) => System.Console.WriteLine("Client connected: " + e.Client.Guid + "" + e.Client.IpPort);
             Server.ClientDisconnected += (s, e) =>
             {
                 if(Sessions.TryRemove(e.Client.Guid, out var session))

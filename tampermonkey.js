@@ -4,7 +4,7 @@
 // @version      2024-03-30
 // @description  try to take over the world!
 // @author       You
-// @match        https://space-aces.com/game?lang=cz //replace with your game url "language"
+// @match        https://space-aces.com/game?lang=cz
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=tampermonkey.net
 // @grant        none
 // ==/UserScript==
@@ -14,10 +14,11 @@
     // Array to store WebSocket connections
     window.SocketList = [];
     // Store reference to original WebSocket constructor
-    var OriginalWS = window.WebSocket;
+   var OriginalWS =window._0x1699652dewg;
+    console.debug(OriginalWS);
 
     // Override WebSocket constructor
-    window.WebSocket = function(...args) {
+      window._0x1699652dewg = function(...args) {
         // Create new WebSocket instance
         var ws = new OriginalWS(...args);
         // Add WebSocket instance to SocketList
