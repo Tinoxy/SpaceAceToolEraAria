@@ -10,11 +10,6 @@ namespace SpaceAceToolEraAria.Logic
 {
     public class LogicApi(Session session)
     {
-        
-        public void Logic()
-        {
-            Console.WriteLine("Logic");
-        }
         public async Task Start()
         {
             while(true)
