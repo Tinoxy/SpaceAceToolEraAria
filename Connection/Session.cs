@@ -14,13 +14,21 @@ namespace SpaceAceToolEraAria.Connection
         public Guid Id { get; set; }
         public User User { get; internal set; }
         public static TickManager TickManager { get; set; } = new();
+        public static string LogicProfile { get; set; } = "default";
         public LogicApi Logic { get; set; }
 
         public Session(Guid id)
         {
             Id = id;
             Logic = new(this);
-            _ = Task.Run(Logic.StartBox);
+            if(LogicProfile.ToLower() == "npc")
+            {
+                _ = Task.Run(Logic.Start);
+            }
+            else
+            {
+                _ = Task.Run(Logic.StartBox);
+            }
         }
         public async Task SendClient(string message) => await WebSocketServer.SendClient(Id, message);
         public async Task SendClient(IPacket packet) => await SendClient(packet.Write());
@@ -32,6 +40,11 @@ namespace SpaceAceToolEraAria.Connection
         
         
         public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void SetLogic(string? profile)
         {
             throw new NotImplementedException();
         }
