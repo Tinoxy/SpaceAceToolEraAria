@@ -10,6 +10,38 @@ namespace SpaceAceToolEraAria.Logic
 {
     public class LogicApi(Session session)
     {
+
+
+
+        public async Task StartBox()
+        {
+            while(true)
+            {
+                try 
+                {
+
+                    if(session.User == null)
+                    {
+                        await Task.Delay(200);
+                        continue;
+                    }
+                    var closest = session.User.GetClosestBox();
+                    session.User.Box = closest;
+                    
+                    if(session.User.Position.X == closest.Position.X && session.User.Box.Position.Y - 110 == session.User.Position.Y)
+                    {
+                        System.Console.WriteLine("Collecting box: " + closest.Hash);
+                        await session.SendPacket("RQBCL|"+closest.Hash);
+                        await Task.Delay(1000);
+                    }
+                    await Move(closest.Position.X, closest.Position.Y - 110);
+                    await Task.Delay(20);
+                }catch(Exception e)
+                {
+                    System.Console.WriteLine(e);
+                }
+            }
+        }
         public async Task Start()
         {
             while(true)
@@ -57,6 +89,14 @@ namespace SpaceAceToolEraAria.Logic
                     System.Console.WriteLine(e);
                 }
             }
+
+        }
+
+        private async Task Move(int x , int y)
+        {
+            await session.SendPacket("MD|"+x+"|"+y);
+            var timeToEnd = session.User.Position.DistanceTo(new(x , y)) / session.User.Speed * 1000;
+            await session.SendClient($"SHM|{session.User.ID}|{x}|{y}|{(int)timeToEnd}");
         }
     }
 }

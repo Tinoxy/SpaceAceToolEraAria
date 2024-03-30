@@ -16,7 +16,9 @@ namespace SpaceAceToolEraAria.Connection
             { HeroMoved.ID , new HeroMoved() },
             { RemoveCharacter.ID , new RemoveCharacter() },
             { NpcClicked.ID , new NpcClicked() },
-            {CharacterMoved.ID , new CharacterMoved()}
+            {CharacterMoved.ID , new CharacterMoved()},
+            {RemoveBox.ID , new RemoveBox()},
+            {BoxInitialize.ID , new BoxInitialize()},
 
         };   
         public static void Parse(Session session ,string message)
