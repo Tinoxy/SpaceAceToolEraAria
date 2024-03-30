@@ -22,7 +22,8 @@ namespace SpaceAceToolEraAria.Connection
             Logic = new(this);
             _ = Task.Run(Logic.Start);
         }
-
+        public async Task SendClient(string message) => await WebSocketServer.SendClient(Id, message);
+        public async Task SendClient(IPacket packet) => await SendClient(packet.Write());
         public async Task SendPacket(string message) => await WebSocketServer.SendPacket(Id, message);
         public async Task SendPacket(IPacket packet) => await SendPacket(packet.Write());
         public async Task ReceivePacket(string message)

@@ -44,8 +44,8 @@ namespace SpaceAceToolEraAria
 
         public Npc NpcClosestTo()
         {
-            var closest = Npcs.Values.OrderBy(npc => npc.DistanceTo(Position)).FirstOrDefault();
-            return closest!;
+            var closest = Npcs.Values.Where(x => x.Username.ToLower().Contains("streuner") || x.Username.ToLower().Contains("lordakia")).OrderBy(npc => npc.DistanceTo(Position)).FirstOrDefault();
+            return closest;
         }
     }
 }
