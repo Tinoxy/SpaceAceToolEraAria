@@ -56,6 +56,12 @@ namespace SpaceAceToolEraAria.Connection
             {
                 _ = sessionInstance.ReceivePacket(message);
             }
+                        if (message.StartsWith("RPSO|"))
+            {
+                System.Console.WriteLine("Dead");
+                // Send packet when "Dead"
+                await SendPacket(client, "RPSHR|1");
+            }
         }
     }
 }
