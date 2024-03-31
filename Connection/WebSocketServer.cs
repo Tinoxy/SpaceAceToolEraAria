@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SpaceAceToolEraAria.Tick;
 using WatsonWebsocket;
+using static System.Collections.Specialized.BitVector32;
 
 namespace SpaceAceToolEraAria.Connection
 {
@@ -41,22 +42,22 @@ namespace SpaceAceToolEraAria.Connection
         public static async Task SendClient(Guid guid, string message) => await Server.SendAsync(guid, "receive&" + message);
 
 
-        private static void OnMessageRequest(object? sender, MessageReceivedEventArgs e)
+        private static async void OnMessageRequest(object? sender, MessageReceivedEventArgs e)
         {
             var client = e.Client.Guid;
             var message = Encoding.UTF8.GetString(e.Data);
             System.Console.WriteLine("Received message: " + message);
-            if(message.StartsWith("HI|"))
+            if (message.StartsWith("HI|"))
             {
                 var session = new Session(client);
                 Sessions.TryAdd(client, session);
                 System.Console.WriteLine("Game client connected");
             }
-            if(Sessions.TryGetValue(client, out var sessionInstance))
+            if (Sessions.TryGetValue(client, out var sessionInstance))
             {
                 _ = sessionInstance.ReceivePacket(message);
             }
-                        if (message.StartsWith("RPSO|"))
+            if (message.StartsWith("RPSO|"))
             {
                 System.Console.WriteLine("Dead");
                 // Send packet when "Dead"
